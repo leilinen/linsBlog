@@ -4,8 +4,8 @@
 
 ## 数据库信息
 
-- **数据库名称**: 博客文章
-- **数据库ID**: `476ea8fd-4c5b-4415-8fb0-051976c45a4e`
+- **数据库名称**: Blog Posts
+- **数据库ID**: `675a0225-7fce-488b-afa4-7b67c4628d13`
 - **所属页面**: 林林多喝水
 - **页面ID**: `305efcd8-f486-80b1-bcab-db4364efff70`
 
@@ -14,7 +14,7 @@
 已配置在 `.env.local` 文件中（已添加到.gitignore，不会提交到GitHub）：
 ```env
 NOTION_API_KEY=your_notion_api_key_here
-NOTION_DATABASE_ID=476ea8fd-4c5b-4415-8fb0-051976c45a4e
+NOTION_DATABASE_ID=675a0225-7fce-488b-afa4-7b67c4628d13
 ```
 
 ## 数据库属性
@@ -46,7 +46,7 @@ NOTION_DATABASE_ID=476ea8fd-4c5b-4415-8fb0-051976c45a4e
 
 1. 打开你的 Notion 工作区
 2. 找到"林林多喝水"页面
-3. 点击"博客文章"数据库
+3. 点击"Blog Posts"数据库
 4. 点击"New"创建新页面
 5. 填写属性：
    - Title: 文章标题
@@ -70,6 +70,41 @@ NOTION_DATABASE_ID=476ea8fd-4c5b-4415-8fb0-051976c45a4e
 npm run dev
 ```
 
+## 示例文章数据
+
+创建一篇文章：
+
+**属性：**
+- Title: "十年谢幕；苏打汽水～"
+- Slug: "ten-years"
+- Date: 2026-02-11
+- Summary: "十年前的今天，我开始了一段旅程..."
+- Tags: ["思考", "生活"]
+- Category: "生活"
+- Status: "已发布"
+- Published: ✅
+- Reading Time: 5
+
+**页面内容：**
+```
+# 十年谢幕；苏打汽水～
+
+这里是文章的开头段落...
+
+## 小标题
+
+这里是一些内容...
+
+- 列表项1
+- 列表项2
+
+> 引用的内容
+
+```js
+const code = "code block";
+```
+```
+
 ## 故障排查
 
 **看不到文章**
@@ -78,9 +113,17 @@ npm run dev
 - 确认 Published 已勾选
 - 确认 Status 不是"归档"
 - 重启开发服务器
+- 检查浏览器控制台错误信息
 
 **API 错误**
 
 - 检查 `.env.local` 文件是否存在
 - 确认 API Key 正确
+- 确认 Database ID 正确
 - 查看 Notion API 状态页面
+
+**数据库属性缺失**
+
+- 数据库已通过API创建，应该包含所有属性
+- 如果发现属性缺失，可能需要手动在Notion中添加
+- 或者在Notion UI中检查数据库结构
