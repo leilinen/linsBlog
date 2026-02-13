@@ -84,21 +84,70 @@ export default async function Home({ searchParams }: HomePageProps) {
         <div className="mx-auto max-w-[620px]">
           <ul className="m-0 list-none p-0">
             {currentPosts.map((post) => (
-              <li key={post.id} className="my-0">
-                <article className="flex items-center justify-between gap-4 text-[0.833rem]">
-                  <h2
-                    className="font-medium leading-relaxed"
-                    style={{ fontWeight: 400, lineHeight: "1.65", fontFamily: "var(--font-open-sans), system-ui, sans-serif" }}
-                  >
-                    <Link href={`/posts/${post.slug}`}>{post.title}</Link>
-                  </h2>
-                  <time
-                    className="whitespace-nowrap text-[0.833rem]"
-                    style={{ color: "#aeaeae", fontWeight: 200, lineHeight: "1.3" }}
-                    dateTime={post.date}
-                  >
-                    {post.dateDisplay}
-                  </time>
+              <li key={post.id} className="mb-6 pb-6" style={{ borderBottom: "1px solid #e5e5e5" }}>
+                <article>
+                  {/* 封面图 */}
+                  {post.coverImage && (
+                    <Link href={`/posts/${post.slug}`} className="block mb-3">
+                      <img
+                        src={post.coverImage}
+                        alt={post.title}
+                        className="w-full h-auto rounded"
+                        style={{ maxHeight: "300px", objectFit: "cover" }}
+                      />
+                    </Link>
+                  )}
+
+                  {/* 标题和日期 */}
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <h2
+                      className="font-medium leading-relaxed text-[0.917rem]"
+                      style={{ fontWeight: 400, lineHeight: "1.65", fontFamily: "var(--font-open-sans), system-ui, sans-serif", color: "#1b8b62" }}
+                    >
+                      <Link href={`/posts/${post.slug}`} className="hover:underline">
+                        {post.title}
+                      </Link>
+                    </h2>
+                    <time
+                      className="whitespace-nowrap text-[0.75rem] shrink-0"
+                      style={{ color: "#aeaeae", fontWeight: 200, lineHeight: "1.3" }}
+                      dateTime={post.date}
+                    >
+                      {post.dateDisplay}
+                    </time>
+                  </div>
+
+                  {/* 摘要 */}
+                  {post.summary && (
+                    <p className="text-[0.833rem] mb-2" style={{ color: "#666", lineHeight: "1.6" }}>
+                      {post.summary}
+                    </p>
+                  )}
+
+                  {/* 标签 */}
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[0.7rem] px-2 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: "#f0f0f0",
+                            color: "#666",
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 阅读时间 */}
+                  {post.readingTime && (
+                    <span className="text-[0.7rem] ml-2" style={{ color: "#999" }}>
+                      {post.readingTime} 分钟阅读
+                    </span>
+                  )}
                 </article>
               </li>
             ))}

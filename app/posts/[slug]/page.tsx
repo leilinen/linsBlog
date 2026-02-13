@@ -63,17 +63,74 @@ export default async function PostPage({ params }: PostPageProps) {
       {/* Post content */}
       <article className="px-[1.75rem] mt-8">
         <div className="mx-auto max-w-[620px]">
+          {/* 封面图 */}
+          {post.coverImage && (
+            <div className="mb-8">
+              <img
+                src={post.coverImage}
+                alt={post.title}
+                className="w-full h-auto rounded"
+                style={{ maxHeight: "400px", objectFit: "cover" }}
+              />
+            </div>
+          )}
+
           <header className="mb-8">
-            <h1 className="text-2xl font-medium leading-relaxed" style={{ color: "#1b8b62" }}>
+            <h1 className="text-2xl font-medium leading-relaxed mb-3" style={{ color: "#1b8b62" }}>
               {post.title}
             </h1>
-            <time
-              className="text-[0.833rem] mt-2 block"
-              style={{ color: "#aeaeae" }}
-              dateTime={post.date}
-            >
-              {post.dateDisplay}
-            </time>
+
+            {/* 元信息 */}
+            <div className="flex items-center flex-wrap gap-3 mb-3">
+              <time
+                className="text-[0.833rem]"
+                style={{ color: "#aeaeae" }}
+                dateTime={post.date}
+              >
+                {post.dateDisplay}
+              </time>
+
+              {post.readingTime && (
+                <span className="text-[0.75rem]" style={{ color: "#999" }}>
+                  · {post.readingTime} 分钟阅读
+                </span>
+              )}
+            </div>
+
+            {/* 标签 */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[0.75rem] px-2.5 py-1 rounded-full"
+                    style={{
+                      backgroundColor: "#f0f0f0",
+                      color: "#666",
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* 摘要 */}
+            {post.summary && (
+              <p
+                className="text-[0.875rem] italic"
+                style={{
+                  color: "#666",
+                  lineHeight: "1.8",
+                  borderLeft: "3px solid #1b8b62",
+                  paddingLeft: "1rem",
+                  marginTop: "1rem",
+                  marginBottom: "2rem",
+                }}
+              >
+                {post.summary}
+              </p>
+            )}
           </header>
 
           <div
@@ -104,16 +161,32 @@ export default async function PostPage({ params }: PostPageProps) {
 function formatMarkdown(content: string): string {
   // Simple markdown parser for basic formatting
   return content
-    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-medium mt-6 mb-3" style="color: #1b8b62;">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-medium mt-8 mb-4" style="color: #1b8b62;">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-medium mt-8 mb-4" style="color: #1b8b62;">$1</h1>')
+    // Code blocks
+    .replace(/```(\w+)?\n([\s\S]*?)```/gim, '<pre class="bg-gray-100 p-4 rounded my-4 overflow-x-auto"><code class="text-sm">$2</code></pre>')
+    // Inline code
+    .replace(/`([^`]+)`/gim, '<code class="bg-gray-100 px-1.5 py-0.5 rounded text-sm" style="color: #1b8b62;">$1</code>')
+    // Headings
+    .replace(/^### (.*$)/gim, '<h3 class="text-xl font-medium mt-8 mb-4" style="color: #1b8b62;">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 class="text-2xl font-medium mt-10 mb-6" style="color: #1b8b62;">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 class="text-3xl font-medium mt-12 mb-6" style="color: #1b8b62;">$1</h1>')
+    // Bold and italic
     .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-    .replace(/^- (.*$)/gim, '<li class="ml-4 my-2">$1</li>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>')
+    // Images
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/gim, '<img src="$2" alt="$1" class="max-w-full h-auto my-4 rounded" />')
+    // Lists
+    .replace(/^- (.*$)/gim, '<li class="ml-6 my-2">$1</li>')
+    // Blockquotes
+    .replace(/^> (.*$)/gim, '<blockquote class="border-l-4 pl-4 my-4 italic" style="border-color: #1b8b62; color: #666;">$1</blockquote>')
+    // Horizontal rules
+    .replace(/^---$/gim, '<hr class="my-8 border-gray-300" />')
+    // Paragraphs
     .replace(/\n\n/gim, '</p><p class="my-4">')
     .replace(/^(?!<)/gim, '<p class="my-4">')
     .replace(/<\/li><p class="my-4">/gim, '</li>')
-    .replace(/(<li>.*<\/li>)/gim, '<ul class="my-4">$1</ul>')
-    .replace(/<\/p><ul class="my-4">/gim, '<ul class="my-4">')
+    .replace(/(<li>.*<\/li>)/gim, '<ul class="my-4 ml-6 list-disc">$1</ul>')
+    .replace(/<\/p><ul class="my-4 ml-6 list-disc">/gim, '<ul class="my-4 ml-6 list-disc">')
     .replace(/<\/ul><p class="my-4">/gim, '</ul>');
 }
