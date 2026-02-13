@@ -8,7 +8,7 @@ interface PostPageProps {
 
 export async function generateMetadata({ params }: PostPageProps) {
   const resolvedParams = await params;
-  const post = getPostBySlug(resolvedParams.slug);
+  const post = await getPostBySlug(resolvedParams.slug);
 
   if (!post) {
     return {
