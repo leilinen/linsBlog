@@ -27,22 +27,29 @@ export async function getPosts() {
     throw new Error("NOTION_DATABASE_ID is not set");
   }
 
-  const response = await notion.databases.query({
-    database_id: databaseId,
-    sorts: [
-      {
-        property: "Date",
-        direction: "descending",
-      },
-    ],
+  // 使用搜索功能查询数据库中的页面
+  const response = await notion.search({
+    filter: {
+      property: "object",
+      value: "page",
+    },
+    sort: {
+      direction: "descending",
+      timestamp: "last_edited_time",
+    },
   });
 
-  return response.results;
+  // 过滤出属于该数据库的页面
+  const databasePages = response.results.filter((item: any) => {
+    return item.parent?.database_id === databaseId;
+  });
+
+  return databasePages;
 }
 
 export async function getPostBySlug(slug: string) {
   const posts = await getPosts();
   return posts.find(
-    (post: any) => post.properties.Slug?.rich_text?.[0]?.plain_text === slug
+    (post: any) => post.properties?.Slug?.rich_text?.[0]?.plain_text === slug
   );
 }
