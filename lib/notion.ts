@@ -52,7 +52,7 @@ export async function getPostBySlug(slug: string) {
   // 使用Name属性匹配slug（暂时）
   // 如果数据库有Slug属性，可以改成: post.properties?.Slug?.rich_text?.[0]?.plain_text === slug
   return posts.find(
-    (post) => {
+    (post: any) => {
       const name = post.properties?.Name?.title?.[0]?.plain_text || "";
       // 将标题转换为slug格式
       return name === slug;
