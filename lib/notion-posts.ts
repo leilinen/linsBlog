@@ -28,25 +28,13 @@ export async function getAllPosts(): Promise<Post[]> {
     const posts = await Promise.all(
       notionPosts.map(async (notionPost: any) => {
         const id = notionPost.id;
-        const title =
-          notionPost.properties.Title?.title?.[0]?.plain_text || "无标题";
-        const slug =
-          notionPost.properties.Slug?.rich_text?.[0]?.plain_text || id;
-        const date = notionPost.properties.Date?.date?.start || "";
-        const published = notionPost.properties.Published?.checkbox !== false;
-
-        // 可选字段
-        const summary =
-          notionPost.properties.Summary?.rich_text?.[0]?.plain_text || "";
-        const tags = notionPost.properties.Tags?.multi_select?.map(
-          (t: any) => t.name
-        ) || [];
-        const category = notionPost.properties.Category?.select?.name || "";
-        const updated = notionPost.properties.Updated?.date?.start || "";
-        const status = notionPost.properties.Status?.select?.name || "";
-        const featured = notionPost.properties.Featured?.checkbox || false;
-        const readingTime = notionPost.properties["Reading Time"]?.number || 0;
-        const coverImage = notionPost.properties["Cover Image"]?.url || "";
+        // 使用Name属性（Notion数据库的标题属性）
+        const title = notionPost.properties.Name?.title?.[0]?.plain_text || "无标题";
+        // 暂时用标题作为slug
+        const slug = title.replace(/\s+/g, "-").toLowerCase().substring(0, 50) || id;
+        // 使用创建时间作为日期
+        const date = notionPost.created_time || "";
+        const published = true; // 默认全部发布
 
         // 获取页面内容
         let content = "";
@@ -69,23 +57,22 @@ export async function getAllPosts(): Promise<Post[]> {
             : "",
           slug,
           content,
-          summary,
-          tags,
-          category,
-          updated,
-          status,
-          featured,
-          readingTime,
-          coverImage,
+          // 可选字段（目前为空，因为数据库没有这些属性）
+          summary: "",
+          tags: [],
+          category: "",
+          updated: date,
+          status: "已发布",
+          featured: false,
+          readingTime: Math.ceil((content.length || 0) / 500), // 简单估算
+          coverImage: "",
           published,
         };
       })
     );
 
     // 过滤只显示已发布的文章
-    const publishedPosts = posts.filter(
-      (post) => post.published && post.status !== "归档"
-    );
+    const publishedPosts = posts.filter((post) => post.published && post.status !== "归档");
 
     return publishedPosts;
   } catch (error) {
