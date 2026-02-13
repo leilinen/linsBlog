@@ -37,7 +37,7 @@ export async function getAllPosts(): Promise<Post[]> {
     console.log("Notion search total results:", response.results.length);
 
     // 过滤出属于该数据库的页面
-    const databaseId = process.env.NOTION_DATABASE_ID;
+    const databaseId = process.env.NOTION_DATABASE_ID || "";
     const databasePages = response.results.filter((item: any) => {
       // 移除连字符后比较（Notion API 返回的 ID 带连字符，环境变量可能没有）
       const itemDbId = (item.parent?.database_id || "").replace(/-/g, "");
