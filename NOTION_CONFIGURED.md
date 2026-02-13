@@ -5,7 +5,7 @@
 ## 数据库信息
 
 - **数据库名称**: Blog Posts
-- **数据库ID**: `675a0225-7fce-488b-afa4-7b67c4628d13`
+- **数据库ID**: `ecafa07a-9652-4c06-9e31-a27915cc9087`
 - **所属页面**: 林林多喝水
 - **页面ID**: `305efcd8-f486-80b1-bcab-db4364efff70`
 
@@ -14,7 +14,7 @@
 已配置在 `.env.local` 文件中（已添加到.gitignore，不会提交到GitHub）：
 ```env
 NOTION_API_KEY=your_notion_api_key_here
-NOTION_DATABASE_ID=675a0225-7fce-488b-afa4-7b67c4628d13
+NOTION_DATABASE_ID=ecafa07a-9652-4c06-9e31-a27915cc9087
 ```
 
 ## 数据库属性
@@ -22,7 +22,7 @@ NOTION_DATABASE_ID=675a0225-7fce-488b-afa4-7b67c4628d13
 已创建的属性包括：
 
 ### 必需属性
-- **Title** (title) - 文章标题
+- **name** (title) - 文章标题
 - **Slug** (rich_text) - URL唯一标识符
 - **Date** (date) - 发布日期
 - **Published** (checkbox) - 是否发布
@@ -33,12 +33,9 @@ NOTION_DATABASE_ID=675a0225-7fce-488b-afa4-7b67c4628d13
   - 设计、思考、技术、读书、观察、生活
 - **Category** (select) - 文章分类
   - 关于、技艺、生活、乱翻书、看天下、图展
-- **Updated** (date) - 最后更新日期
 - **Status** (select) - 文章状态
   - 草稿、已发布、归档
 - **Featured** (checkbox) - 是否精选
-- **Reading Time** (number) - 预计阅读时间（分钟）
-- **Cover Image** (url) - 封面图片链接
 
 ## 使用说明
 
@@ -49,7 +46,7 @@ NOTION_DATABASE_ID=675a0225-7fce-488b-afa4-7b67c4628d13
 3. 点击"Blog Posts"数据库
 4. 点击"New"创建新页面
 5. 填写属性：
-   - Title: 文章标题
+   - name: 文章标题
    - Slug: URL标识符（如 `ten-years`）
    - Date: 发布日期
    - Published: 勾选（发布）
@@ -75,7 +72,7 @@ npm run dev
 创建一篇文章：
 
 **属性：**
-- Title: "十年谢幕；苏打汽水～"
+- name: "十年谢幕；苏打汽水～"
 - Slug: "ten-years"
 - Date: 2026-02-11
 - Summary: "十年前的今天，我开始了一段旅程..."
@@ -83,10 +80,9 @@ npm run dev
 - Category: "生活"
 - Status: "已发布"
 - Published: ✅
-- Reading Time: 5
 
 **页面内容：**
-```
+```markdown
 # 十年谢幕；苏打汽水～
 
 这里是文章的开头段落...
@@ -99,10 +95,6 @@ npm run dev
 - 列表项2
 
 > 引用的内容
-
-```js
-const code = "code block";
-```
 ```
 
 ## 故障排查
@@ -124,6 +116,6 @@ const code = "code block";
 
 **数据库属性缺失**
 
-- 数据库已通过API创建，应该包含所有属性
-- 如果发现属性缺失，可能需要手动在Notion中添加
-- 或者在Notion UI中检查数据库结构
+- 数据库已通过API创建，包含所有属性
+- 如果在Notion UI中看不到属性，请刷新页面
+- 确认你查看的是正确的"Blog Posts"数据库
