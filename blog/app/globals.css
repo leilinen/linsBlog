@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-merriweather-sans: var(--font-merriweather-sans);
+  --font-open-sans: var(--font-open-sans);
+}
+
+body {
+  background-color: #fafafa;
+  color: #333;
+  font-family: var(--font-open-sans), system-ui, sans-serif;
+}
