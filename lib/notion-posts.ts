@@ -1,5 +1,43 @@
 import notion, { getPosts as getNotionPosts } from "./notion";
-import { getPageContent } from "./notion-utils";
+
+// 直接在这里实现 getPageContent，避免模块导入问题
+async function getPageContent(pageId: string): Promise<string> {
+  const blocks = [];
+  let cursor: string | undefined = undefined;
+
+  do {
+    const response = await notion.blocks.children.list({
+      block_id: pageId,
+      start_cursor: cursor,
+    });
+    blocks.push(...response.results);
+    cursor = response.next_cursor;
+  } while (cursor);
+
+  return blocks
+    .map((block: any) => notionBlockToMarkdown(block))
+    .join("");
+}
+
+function notionBlockToMarkdown(block: any): string {
+  const type = block.type;
+  const content = block[type];
+
+  switch (type) {
+    case "paragraph":
+      return content.rich_text?.[0]?.plain_text || "";
+    case "heading_1":
+      return `# ${content.rich_text?.[0]?.plain_text || ""}\n\n`;
+    case "heading_2":
+      return `## ${content.rich_text?.[0]?.plain_text || ""}\n\n`;
+    case "heading_3":
+      return `### ${content.rich_text?.[0]?.plain_text || ""}\n\n`;
+    case "bulleted_list_item":
+      return `- ${content.rich_text?.[0]?.plain_text || ""}\n`;
+    default:
+      return "";
+  }
+}
 
 export interface Post {
   id: string;
@@ -28,13 +66,9 @@ export async function getAllPosts(): Promise<Post[]> {
     const posts = await Promise.all(
       notionPosts.map(async (notionPost: any) => {
         const id = notionPost.id;
-        // 使用Name属性（Notion数据库的标题属性）
-        const title = notionPost.properties.Name?.title?.[0]?.plain_text || "无标题";
-        // 暂时用标题作为slug
-        const slug = title.replace(/\s+/g, "-").toLowerCase().substring(0, 50) || id;
-        // 使用创建时间作为日期
+        const title = notionPost.properties?.Name?.title?.[0]?.plain_text || "无标题";
         const date = notionPost.created_time || "";
-        const published = true; // 默认全部发布
+        const slug = title.replace(/\s+/g, "-").toLowerCase().substring(0, 50) || id;
 
         // 获取页面内容
         let content = "";
@@ -64,17 +98,14 @@ export async function getAllPosts(): Promise<Post[]> {
           updated: date,
           status: "已发布",
           featured: false,
-          readingTime: Math.ceil((content.length || 0) / 500), // 简单估算
+          readingTime: Math.ceil((content.length || 0) / 500),
           coverImage: "",
-          published,
+          published: true,
         };
       })
     );
 
-    // 过滤只显示已发布的文章
-    const publishedPosts = posts.filter((post) => post.published && post.status !== "归档");
-
-    return publishedPosts;
+    return posts;
   } catch (error) {
     console.error("Failed to fetch posts from Notion:", error);
     return [];
