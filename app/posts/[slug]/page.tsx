@@ -24,7 +24,15 @@ export async function generateMetadata({ params }: PostPageProps) {
 
 export default async function PostPage({ params }: PostPageProps) {
   const resolvedParams = await params;
-  const post = getPostBySlug(resolvedParams.slug);
+  const post = await getPostBySlug(resolvedParams.slug);
+
+  // 调试日志
+  console.log(`\n=== PostPage Debug ===`);
+  console.log(`Slug: "${resolvedParams.slug}"`);
+  console.log(`Post found: ${!!post}`);
+  console.log(`Post content length: ${post?.content?.length || 0}`);
+  console.log(`Post summary: "${post?.summary || ""}"`);
+  console.log(`Post content (first 200 chars): "${post?.content?.substring(0, 200) || ""}"`);
 
   if (!post) {
     notFound();
