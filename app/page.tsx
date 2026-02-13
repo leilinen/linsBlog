@@ -1,14 +1,14 @@
-"use client";
-
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { posts, Post } from "@/lib/posts";
+import { getPaginatedPosts } from "@/lib/posts";
 
-export default function Home() {
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [page, setPage] = useState(1);
-  const searchParams = useSearchParams();
+interface HomePageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const resolvedSearchParams = await searchParams;
+  const page = parseInt(resolvedSearchParams.page || "1");
+  const { posts: currentPosts, currentPage, totalPages, hasNextPage, hasPrevPage } = await getPaginatedPosts(page);
 
   const menuItems = [
     { name: "关于", href: "/about" },
@@ -18,20 +18,6 @@ export default function Home() {
     { name: "看天下", href: "/world" },
     { name: "图展", href: "/gallery" },
   ];
-
-  useEffect(() => {
-    const pageParam = searchParams.get("page");
-    setPage(pageParam ? parseInt(pageParam) : 1);
-  }, [searchParams]);
-
-  const POSTS_PER_PAGE = 7;
-  const startIndex = (page - 1) * POSTS_PER_PAGE;
-  const endIndex = startIndex + POSTS_PER_PAGE;
-  const currentPosts = posts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
-  const currentPage = page;
-  const hasNextPage = page < totalPages;
-  const hasPrevPage = page > 1;
 
   return (
     <div className="min-h-[750px] bg-[#fafafa]">
@@ -45,9 +31,7 @@ export default function Home() {
 
             {/* Hamburger menu with dropdown */}
             <div
-              className="relative"
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
+              className="relative group"
             >
               {/* Hamburger button */}
               <button
@@ -60,39 +44,33 @@ export default function Home() {
               </button>
 
               {/* Dropdown menu */}
-              {showDropdown && (
-                <div
-                  className="absolute right-0 mt-1 py-1 rounded shadow-sm z-50"
-                  style={{
-                    backgroundColor: "#fafafa",
-                    minWidth: "100px",
-                    fontSize: "0.75rem",
-                    opacity: 0,
-                    transform: "translateY(-10px)",
-                    animation: "slideDown 1s ease-out forwards",
-                  }}
-                >
-                  <style>{`
-                    @keyframes slideDown {
-                      to {
-                        opacity: 1;
-                        transform: translateY(0);
-                      }
-                    }
-                  `}</style>
-                  {menuItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="block px-3 py-2.5 hover:bg-gray-100 hover:underline no-underline"
-                      style={{ color: "#1b8b62" }}
-                      onClick={() => setShowDropdown(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <div
+                className="absolute right-0 mt-1 py-1 rounded shadow-sm z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-1000"
+                style={{
+                  backgroundColor: "#fafafa",
+                  minWidth: "100px",
+                  fontSize: "0.75rem",
+                  transform: "translateY(-10px)",
+                  transition: "all 1s ease-out",
+                }}
+              >
+                <style>{`
+                  .group-hover > div:nth-child(2) {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                `}</style>
+                {menuItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="block px-3 py-2.5 hover:bg-gray-100 hover:underline"
+                    style={{ color: "#1b8b62" }}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>

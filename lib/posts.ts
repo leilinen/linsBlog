@@ -1,3 +1,6 @@
+// 智能选择数据源：优先使用Notion，失败时使用备用数据
+import { getAllPosts as getNotionAllPosts } from "./notion-posts";
+
 export interface Post {
   id: string;
   title: string;
@@ -7,9 +10,8 @@ export interface Post {
   content?: string;
 }
 
-export { type Post };
-
-export const posts: Post[] = [
+// 备用数据（硬编码，用于Notion未配置时）
+const fallbackPosts: Post[] = [
   {
     id: "1",
     title: "十年谢幕；苏打汽水～",
@@ -40,141 +42,39 @@ export const posts: Post[] = [
 
 关于阿凡达和现代社会的思考...`
   },
-  {
-    id: "3",
-    title: "橡果子",
-    date: "2026-01-28",
-    dateDisplay: "2026-1-28",
-    slug: "acorn",
-    content: `# 橡果子
-
-关于橡果子的思考...`
-  },
-  {
-    id: "4",
-    title: "我的修行，是睡觉放松玩",
-    date: "2026-01-21",
-    dateDisplay: "2026-1-21",
-    slug: "my-practice",
-    content: `# 我的修行，是睡觉放松玩
-
-关于修行的思考...`
-  },
-  {
-    id: "5",
-    title: "最后一次更新这款眼镜框了！",
-    date: "2026-01-13",
-    dateDisplay: "2026-1-13",
-    slug: "glasses",
-    content: `# 最后一次更新这款眼镜框了！
-
-关于眼镜框的设计...`
-  },
-  {
-    id: "6",
-    title: "你脸上是摄像头吗？",
-    date: "2026-01-04",
-    dateDisplay: "2026-1-4",
-    slug: "camera-face",
-    content: `# 你脸上是摄像头吗？
-
-关于隐私和科技的思考...`
-  },
-  {
-    id: "7",
-    title: "[设计思维] 2 clicks x7 per week",
-    date: "2025-12-27",
-    dateDisplay: "2025-12-27",
-    slug: "2clicks",
-    content: `# [设计思维] 2 clicks x7 per week
-
-关于设计思维的思考...`
-  },
-  {
-    id: "8",
-    title: "设计中的留白艺术",
-    date: "2025-12-20",
-    dateDisplay: "2025-12-20",
-    slug: "white-space",
-    content: `# 设计中的留白艺术
-
-关于留白艺术的思考...`
-  },
-  {
-    id: "9",
-    title: "阅读笔记：设计心理学",
-    date: "2025-12-15",
-    dateDisplay: "2025-12-15",
-    slug: "design-psychology",
-    content: `# 阅读笔记：设计心理学
-
-设计心理学读书笔记...`
-  },
-  {
-    id: "10",
-    title: "Minimalism in Modern Web Design",
-    date: "2025-12-10",
-    dateDisplay: "2025-12-10",
-    slug: "minimalism-web",
-    content: `# Minimalism in Modern Web Design
-
-极简主义网页设计...`
-  },
-  {
-    id: "11",
-    title: "色彩搭配基础指南",
-    date: "2025-12-05",
-    dateDisplay: "2025-12-5",
-    slug: "color-guide",
-    content: `# 色彩搭配基础指南
-
-色彩搭配基础知识...`
-  },
-  {
-    id: "12",
-    title: "Typography for the Web",
-    date: "2025-11-28",
-    dateDisplay: "2025-11-28",
-    slug: "web-typography",
-    content: `# Typography for the Web
-
-网页排版设计...`
-  },
-  {
-    id: "13",
-    title: "响应式设计的实践与思考",
-    date: "2025-11-20",
-    dateDisplay: "2025-11-20",
-    slug: "responsive-design",
-    content: `# 响应式设计的实践与思考
-
-响应式设计思考...`
-  },
-  {
-    id: "14",
-    title: "用户体验设计的核心原则",
-    date: "2025-11-15",
-    dateDisplay: "2025-11-15",
-    slug: "ux-principles",
-    content: `# 用户体验设计的核心原则
-
-UX设计原则...`
-  },
-  {
-    id: "15",
-    title: "设计系统构建指南",
-    date: "2025-11-10",
-    dateDisplay: "2025-11-10",
-    slug: "design-system",
-    content: `# 设计系统构建指南
-
-设计系统构建...`
-  }
 ];
+
+export async function getAllPosts(): Promise<Post[]> {
+  // 检查是否配置了Notion
+  if (!process.env.NOTION_API_KEY || !process.env.NOTION_DATABASE_ID) {
+    console.log("Notion not configured, using fallback data");
+    return fallbackPosts;
+  }
+
+  try {
+    const notionPosts = await getNotionAllPosts();
+    if (notionPosts.length > 0) {
+      console.log(`Loaded ${notionPosts.length} posts from Notion`);
+      return notionPosts;
+    } else {
+      console.log("No posts in Notion, using fallback data");
+      return fallbackPosts;
+    }
+  } catch (error) {
+    console.error("Failed to load posts from Notion, using fallback:", error);
+    return fallbackPosts;
+  }
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | undefined> {
+  const posts = await getAllPosts();
+  return posts.find((post) => post.slug === slug);
+}
 
 const POSTS_PER_PAGE = 7;
 
-export function getPaginatedPosts(page: number = 1) {
+export async function getPaginatedPosts(page: number = 1) {
+  const posts = await getAllPosts();
   const startIndex = (page - 1) * POSTS_PER_PAGE;
   const endIndex = startIndex + POSTS_PER_PAGE;
   const paginatedPosts = posts.slice(startIndex, endIndex);
@@ -187,8 +87,4 @@ export function getPaginatedPosts(page: number = 1) {
     hasNextPage: page < totalPages,
     hasPrevPage: page > 1,
   };
-}
-
-export function getPostBySlug(slug: string): Post | undefined {
-  return posts.find((post) => post.slug === slug);
 }
