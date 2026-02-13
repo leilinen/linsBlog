@@ -170,7 +170,7 @@ export async function getPageBlocks(pageId: string) {
       start_cursor: cursor,
     });
     blocks.push(...response.results);
-    cursor = response.next_cursor;
+    cursor = response.next_cursor || undefined;
   } while (cursor);
 
   return blocks;
