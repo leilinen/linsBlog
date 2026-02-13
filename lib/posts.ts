@@ -1,5 +1,5 @@
 // 智能选择数据源：优先使用Notion，失败时使用备用数据
-import { getAllPosts as getNotionAllPosts } from "./notion-posts";
+import { getAllPosts as getNotionAllPosts, Post as NotionPost } from "./notion-posts";
 
 export interface Post {
   id: string;
@@ -8,6 +8,15 @@ export interface Post {
   dateDisplay: string;
   slug: string;
   content?: string;
+  summary?: string;
+  tags?: string[];
+  category?: string;
+  updated?: string;
+  status?: string;
+  featured?: boolean;
+  readingTime?: number;
+  coverImage?: string;
+  published?: boolean;
 }
 
 // 备用数据（硬编码，用于Notion未配置时）
@@ -18,6 +27,13 @@ const fallbackPosts: Post[] = [
     date: "2026-02-11",
     dateDisplay: "2026-2-11",
     slug: "ten-years",
+    summary: "十年前的今天，我开始了一段旅程...",
+    tags: ["思考", "生活"],
+    category: "生活",
+    status: "已发布",
+    featured: true,
+    readingTime: 5,
+    published: true,
     content: `# 十年谢幕；苏打汽水～
 
 这是第一篇测试文章的正文内容。
@@ -38,6 +54,12 @@ const fallbackPosts: Post[] = [
     date: "2026-01-28",
     dateDisplay: "2026-1-28",
     slug: "avatar",
+    summary: "关于阿凡达和现代社会的思考",
+    tags: ["思考", "观察"],
+    category: "看天下",
+    status: "已发布",
+    readingTime: 8,
+    published: true,
     content: `# 君子善假于物，行者直指本心
 
 关于阿凡达和现代社会的思考...`
@@ -69,6 +91,22 @@ export async function getAllPosts(): Promise<Post[]> {
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
   const posts = await getAllPosts();
   return posts.find((post) => post.slug === slug);
+}
+
+export async function getPostsByCategory(category: string): Promise<Post[]> {
+  const posts = await getAllPosts();
+  return posts.filter((post) => post.category === category);
+}
+
+export async function getPostsByTag(tag: string): Promise<Post[]> {
+  const posts = await getAllPosts();
+  return posts.filter((post) => post.tags?.includes(tag));
+}
+
+export async function getFeaturedPosts(limit?: number): Promise<Post[]> {
+  const posts = await getAllPosts();
+  const featured = posts.filter((post) => post.featured);
+  return limit ? featured.slice(0, limit) : featured;
 }
 
 const POSTS_PER_PAGE = 7;
