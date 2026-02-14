@@ -66,7 +66,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
           <div className="flex items-center justify-between py-[0.44rem]">
-            <h1 className="font-merriweather-sans text-base font-light" style={{ color: "#5cb890" }}>
+            <h1 className="font-merriweather-sans text-sm font-light" style={{ color: "#1b8b62" }}>
               林林多喝水
             </h1>
 
@@ -77,7 +77,7 @@ export default async function Home({ searchParams }: HomePageProps) {
               {/* Hamburger button */}
               <button
                 className="flex flex-col justify-center items-center cursor-pointer"
-                style={{ border: "none", background: "none", padding: "4px", width: "24px", height: "24px" }}
+                style={{ border: "none", background: "none", padding: "5px", width: "28px", height: "28px" }}
               >
                 <span style={{ display: "block", width: "18px", height: "1.5px", backgroundColor: "#1b8b62", marginBottom: "4px" }}></span>
                 <span style={{ display: "block", width: "18px", height: "1.5px", backgroundColor: "#1b8b62", marginBottom: "4px" }}></span>
@@ -90,7 +90,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                 style={{
                   backgroundColor: "#fafafa",
                   minWidth: "100px",
-                  fontSize: "0.75rem",
+                  fontSize: "1rem",
                   transform: "translateY(-10px)",
                   transition: "all 1s ease-out",
                 }}
@@ -105,7 +105,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="block px-3 py-2.5 hover:bg-gray-100 hover:underline"
+                    className="block px-4 py-2 hover:bg-gray-100 hover:underline"
                     style={{ color: "#1b8b62" }}
                   >
                     {item.name}
@@ -140,7 +140,7 @@ export default async function Home({ searchParams }: HomePageProps) {
                   )}
 
                   {/* 标题和日期 */}
-                  <div className="flex items-start justify-between gap-4 mb-2">
+                  <div className="flex items-center justify-between gap-4 mb-2">
                     <h2
                       className="font-medium leading-relaxed text-[1.1rem]"
                       style={{ fontWeight: 400, lineHeight: "1.65", fontFamily: "var(--font-open-sans), system-ui, sans-serif" }}
