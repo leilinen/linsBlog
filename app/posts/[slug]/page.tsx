@@ -86,9 +86,11 @@ export default async function PostPage({ params }: PostPageProps) {
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
           <div className="flex items-center justify-between py-[0.44rem]">
-            <h1 className="font-merriweather-sans text-2xl font-light" style={{ color: "#1b8b62" }}>
-              林林多喝水
-            </h1>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <h1 className="font-merriweather-sans text-2xl font-light hover:opacity-70 transition-opacity cursor-pointer" style={{ color: "#1b8b62" }}>
+                林林多喝水
+              </h1>
+            </Link>
           </div>
         </div>
       </div>
@@ -112,9 +114,9 @@ export default async function PostPage({ params }: PostPageProps) {
           )}
 
           <header className="mb-8">
-            <h1 className="text-xl font-medium leading-relaxed mb-3" style={{ color: "#1b8b62" }}>
+            <h2 className="text-xl font-medium leading-relaxed mb-3" style={{ color: "#1b8b62" }}>
               {post.title}
-            </h1>
+            </h2>
 
             {/* 元信息 */}
             <div className="flex items-center flex-wrap gap-3 mb-3">
