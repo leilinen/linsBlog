@@ -59,7 +59,8 @@ export async function getAllPosts(): Promise<Post[]> {
         console.log(`Raw properties:`, JSON.stringify(notionPost.properties, null, 2));
 
         const title = notionPost.properties?.Name?.title?.[0]?.plain_text || "无标题";
-        const date = notionPost.created_time || "";
+        // 使用 Notion 数据库的 Date 属性
+        const date = notionPost.properties?.Date?.date?.start || notionPost.created_time || "";
         // 直接使用 Notion page ID 作为 slug（UUID 格式），避免中文字符编码问题
         const slug = id;
 
@@ -116,7 +117,15 @@ export async function getAllPosts(): Promise<Post[]> {
 
     console.log(`\nTotal posts before filter: ${posts.length}`);
     // 过滤只显示已发布的文章
-    const publishedPosts = posts.filter((post) => post.published && post.status !== "归档");
+    let publishedPosts = posts.filter((post) => post.published && post.status !== "归档");
+
+    // 按照日期从近到远排序
+    publishedPosts.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA; // 降序，最新的在前
+    });
+
     console.log(`Published posts after filter: ${publishedPosts.length}`);
     console.log(`Filtered out posts: ${posts.filter(p => !p.published || p.status === "归档").map(p => `"${p.title}" (published=${p.published}, status="${p.status}")`).join(", ")}\n`);
 
