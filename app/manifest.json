@@ -1,0 +1,19 @@
+{
+  "name": "林林多喝水",
+  "short_name": "林林博客",
+  "description": "Designer & Storyteller - 一个关于设计、生活、技艺和阅读的个人博客",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#1b8b62",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["blog", "lifestyle", "design"],
+  "lang": "zh-CN"
+}

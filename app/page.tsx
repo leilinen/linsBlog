@@ -1,5 +1,16 @@
 import Link from "next/link";
 import { getPaginatedPosts } from "@/lib/posts";
+import { getAllPosts } from "@/lib/posts";
+
+// 结构化数据组件
+function JsonLd({ data }: { data: Record<string, unknown> }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
 
 interface HomePageProps {
   searchParams: Promise<{ page?: string }>;
@@ -9,6 +20,35 @@ export default async function Home({ searchParams }: HomePageProps) {
   const resolvedSearchParams = await searchParams;
   const page = parseInt(resolvedSearchParams.page || "1");
   const { posts: currentPosts, currentPage, totalPages, hasNextPage, hasPrevPage } = await getPaginatedPosts(page);
+  const allPosts = await getAllPosts();
+
+  // JSON-LD 结构化数据
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "林林多喝水",
+    "url": "https://blog.f-free.site",
+    "description": "Designer & Storyteller - 一个关于设计、生活、技艺和阅读的个人博客",
+    "author": {
+      "@type": "Person",
+      "name": "林林",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "林林多喝水",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://blog.f-free.site/favicon.ico",
+      },
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://blog.f-free.site/search?q={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
+    "inLanguage": "zh-CN",
+    "copyrightYear": new Date().getFullYear(),
+  };
 
   const menuItems = [
     { name: "关于", href: "/about" },
@@ -21,11 +61,12 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <div className="min-h-[750px] bg-[#fafafa]">
+      <JsonLd data={jsonLd} />
       {/* Header with navigation */}
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
           <div className="flex items-center justify-between py-[0.44rem]">
-            <h1 className="font-merriweather-sans text-2xl font-light" style={{ color: "#1b8b62" }}>
+            <h1 className="font-merriweather-sans text-base font-light" style={{ color: "#5cb890" }}>
               林林多喝水
             </h1>
 
@@ -82,7 +123,7 @@ export default async function Home({ searchParams }: HomePageProps) {
       {/* Posts list */}
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
-          <ul className="m-0 list-none p-0">
+          <ul className="m-0 list-none p-0" style={{ paddingLeft: 0, marginLeft: 0 }}>
             {currentPosts.map((post) => (
               <li key={post.id} className="mb-6 pb-6" style={{ borderBottom: "1px solid #e5e5e5" }}>
                 <article>
@@ -101,10 +142,13 @@ export default async function Home({ searchParams }: HomePageProps) {
                   {/* 标题和日期 */}
                   <div className="flex items-start justify-between gap-4 mb-2">
                     <h2
-                      className="font-medium leading-relaxed text-[0.917rem]"
-                      style={{ fontWeight: 400, lineHeight: "1.65", fontFamily: "var(--font-open-sans), system-ui, sans-serif", color: "#1b8b62" }}
+                      className="font-medium leading-relaxed text-[1.1rem]"
+                      style={{ fontWeight: 400, lineHeight: "1.65", fontFamily: "var(--font-open-sans), system-ui, sans-serif" }}
                     >
-                      <Link href={`/posts/${post.slug}`} className="hover:underline">
+                      <Link
+                        href={`/posts/${post.slug}`}
+                        className="post-title-link"
+                      >
                         {post.title}
                       </Link>
                     </h2>
@@ -206,21 +250,8 @@ export default async function Home({ searchParams }: HomePageProps) {
       {/* Footer */}
       <div className="px-[1.75rem] pt-[3.5rem] pb-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
-          <div className="flex items-start justify-between gap-12">
-            <div className="text-[0.833rem]" style={{ color: "#1b8b62", flexBasis: "45%" }}>
-              Designer & Storyteller
-            </div>
-            <div style={{ flexBasis: "55%" }}>
-              <form action="/search">
-                <input
-                  type="search"
-                  name="q"
-                  placeholder="输入搜索关键字/词..."
-                  className="w-full rounded-full px-4 py-2 text-[0.833rem] bg-[#e9e9e9] placeholder-gray-400 focus:outline-none"
-                  style={{ fontSize: "0.66rem", borderRadius: "18px" }}
-                />
-              </form>
-            </div>
+          <div className="text-[0.833rem]" style={{ color: "#1b8b62" }}>
+            Copyright © 2026 leiline
           </div>
         </div>
       </div>

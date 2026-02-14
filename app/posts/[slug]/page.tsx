@@ -2,6 +2,16 @@ import Link from "next/link";
 import { getPostBySlug } from "@/lib/posts";
 import { notFound } from "next/navigation";
 
+// 结构化数据组件
+function JsonLd({ data }: { data: Record<string, unknown> }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
+  );
+}
+
 interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -38,8 +48,40 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
+  // JSON-LD 结构化数据
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.summary || post.content?.slice(0, 160) || "",
+    "image": post.coverImage || "https://blog.f-free.site/favicon.ico",
+    "datePublished": post.date,
+    "dateModified": post.updated || post.date,
+    "author": {
+      "@type": "Person",
+      "name": "林林",
+      "url": "https://blog.f-free.site",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "林林多喝水",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://blog.f-free.site/favicon.ico",
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://blog.f-free.site/posts/${post.slug}`,
+    },
+    "keywords": post.tags?.join(", ") || "",
+    "inLanguage": "zh-CN",
+    ...(post.readingTime && { "timeRequired": `PT${post.readingTime}M` }),
+  };
+
   return (
     <div className="min-h-[750px] bg-[#fafafa]">
+      <JsonLd data={jsonLd} />
       {/* Header with navigation */}
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
@@ -155,10 +197,8 @@ export default async function PostPage({ params }: PostPageProps) {
       {/* Footer */}
       <div className="px-[1.75rem] pt-[3.5rem] pb-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
-          <div className="flex items-start justify-between gap-12">
-            <div className="text-[0.833rem]" style={{ color: "#1b8b62", flexBasis: "45%" }}>
-              Designer & Storyteller
-            </div>
+          <div className="text-[0.833rem]" style={{ color: "#1b8b62" }}>
+            Copyright © 2026 leiline
           </div>
         </div>
       </div>

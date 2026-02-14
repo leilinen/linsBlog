@@ -125,3 +125,19 @@ body {
   font-size: 0.875rem;
   line-height: 1.6;
 }
+
+/* 首页文章标题链接样式 - 下划线从中间向两边展开 */
+.post-title-link {
+  color: #333;
+  text-decoration: none;
+  background-image: linear-gradient(#333, #333);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  transition: background-size 0.5s ease-in-out;
+  padding-bottom: 4px;
+}
+
+.post-title-link:hover {
+  background-size: 100% 1px;
+}

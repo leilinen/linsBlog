@@ -49,8 +49,8 @@ export default function BooksPage() {
 
       <div className="px-[1.75rem] pt-[3.5rem] pb-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
-          <div className="text-[0.833rem]" style={{ color: "#1b8b62", flexBasis: "45%" }}>
-            Designer & Storyteller
+          <div className="text-[0.833rem]" style={{ color: "#1b8b62" }}>
+            Copyright © 2026 leiline
           </div>
         </div>
       </div>
