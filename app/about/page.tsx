@@ -12,9 +12,11 @@ export default function AboutPage() {
       <div className="px-[1.75rem]">
         <div className="mx-auto max-w-[620px]">
           <div className="flex items-center justify-between py-[0.44rem]">
-            <h1 className="font-merriweather-sans text-2xl font-light" style={{ color: "#1b8b62" }}>
-              林林多喝水
-            </h1>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <h1 className="font-merriweather-sans text-2xl font-light hover:opacity-70 transition-opacity cursor-pointer" style={{ color: "#1b8b62" }}>
+                林林多喝水
+              </h1>
+            </Link>
           </div>
         </div>
       </div>
@@ -22,27 +24,13 @@ export default function AboutPage() {
       {/* Spacer */}
       <div className="h-[72px]" aria-hidden="true"></div>
 
-      {/* Back button */}
-      <div className="px-[1.75rem]">
-        <div className="mx-auto max-w-[620px]">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1 text-[0.833rem] hover:opacity-70 transition-opacity"
-            style={{ color: "#1b8b62" }}
-          >
-            <span>←</span>
-            <span>返回</span>
-          </Link>
-        </div>
-      </div>
-
       {/* Content */}
       <article className="px-[1.75rem] mt-8">
         <div className="mx-auto max-w-[620px]">
           <header className="mb-8">
-            <h1 className="text-2xl font-medium leading-relaxed" style={{ color: "#1b8b62" }}>
-              关于
-            </h1>
+            <h2 className="text-2xl font-medium leading-relaxed" style={{ color: "#1b8b62" }}>
+              关于我
+            </h2>
           </header>
 
           <div
@@ -53,11 +41,16 @@ export default function AboutPage() {
             }}
           >
             <p className="my-4">
-              这里是关于页面。
+              一个工程师，会在这里记录所思，所想，所行。
+              公众号"林林多喝水"。
             </p>
-            <p className="my-4">
-              Designer & Storyteller。
-            </p>
+
+            <img
+              src="https://maas-log-prod.cn-wlcb.ufileos.com/anthropic/9b9461ca-042a-410c-97cf-9a6250de53fd/934cc0c62144aa9d95df4d2c15e820c4.jpg?UCloudPublicKey=TOKEN_e15ba47a-d098-4fbd-9afc-a0dcf0e4e621&Expires=1771050854&Signature=hy9VJivLbDefZykw1CuD6rj2C6s="
+              alt="关于我"
+              className="w-full h-auto rounded my-8"
+              style={{ maxHeight: "200px", objectFit: "contain" }}
+            />
           </div>
         </div>
       </article>

@@ -96,20 +96,6 @@ export default async function PostPage({ params }: PostPageProps) {
       {/* Spacer */}
       <div className="h-[72px]" aria-hidden="true"></div>
 
-      {/* Back button */}
-      <div className="px-[1.75rem]">
-        <div className="mx-auto max-w-[620px]">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1 text-[0.833rem] hover:opacity-70 transition-opacity"
-            style={{ color: "#1b8b62" }}
-          >
-            <span>←</span>
-            <span>返回</span>
-          </Link>
-        </div>
-      </div>
-
       {/* Post content */}
       <article className="px-[1.75rem] mt-8">
         <div className="mx-auto max-w-[620px]">
@@ -126,7 +112,7 @@ export default async function PostPage({ params }: PostPageProps) {
           )}
 
           <header className="mb-8">
-            <h1 className="text-2xl font-medium leading-relaxed mb-3" style={{ color: "#1b8b62" }}>
+            <h1 className="text-xl font-medium leading-relaxed mb-3" style={{ color: "#1b8b62" }}>
               {post.title}
             </h1>
 

@@ -52,11 +52,12 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   const menuItems = [
     { name: "关于", href: "/about" },
-    { name: "技艺", href: "/skills" },
-    { name: "生活", href: "/life" },
-    { name: "乱翻书", href: "/books" },
-    { name: "看天下", href: "/world" },
-    { name: "图展", href: "/gallery" },
+    // 其他菜单暂时隐藏
+    // { name: "技艺", href: "/skills" },
+    // { name: "生活", href: "/life" },
+    // { name: "乱翻书", href: "/books" },
+    // { name: "看天下", href: "/world" },
+    // { name: "图展", href: "/gallery" },
   ];
 
   return (
